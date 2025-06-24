@@ -1,0 +1,19 @@
+How to all Delete old commits and make one commit which is the latest commit
+
+This is the safest & cleanest way if you want to keep only your current code and wipe the rest of the history.
+
+# Create a temporary orphan branch
+git checkout --orphan temp_branch
+
+# Add all files as a fresh commit
+git add .
+git commit -m "starting"
+
+# Delete old main branch
+git branch -D main
+
+# Rename temp_branch to main
+git branch -m main
+
+# Force push to remote to overwrite history (WARNING: irreversible)
+git push --force origin main
