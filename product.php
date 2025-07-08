@@ -1,5 +1,5 @@
 <?php
-
+    
     require_once 'data.php';
     require_once 'includes/head.php';
 
@@ -9,7 +9,8 @@
     $stmt = $pdo->query("SELECT * FROM products");
     $products = $stmt->fetchAll();
 ?>
-    <div id="navbar"></div>
+   <?php include('includes/nav.php')?>
+
     <main>
         <section class="products-page py-6">
             <div class="container mx-auto px-4 max-w-6xl">
