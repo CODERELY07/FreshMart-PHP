@@ -1,6 +1,12 @@
 <?php
 require './../connection.php';
+include('./../includes/helpers.php');
 session_start();
+
+if (isset($_SESSION['user_id'])) {
+    redirect('home');
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'] ?? '';
@@ -15,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($pass)) {
         $errors['password'] = "Password is required.";
     }
-
+    
     if (empty($errors)) {
         try {
             $stmt = $pdo->prepare("SELECT user_id, password_hash FROM users WHERE email = :email");
@@ -40,17 +46,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             ':expires_at' => $expires
                         ]);
 
-                        // Store in cookie (token is raw, never hashed)
                         setcookie('remember_token', $token, [
                             'expires' => strtotime($expires),
                             'path' => '/',
                             'httponly' => true,
-                            'secure' => true, // Set to true in production (HTTPS)
+                            'secure' => true, 
                             'samesite' => 'Strict'
                         ]);
                     }
 
-                    header("Location: ../dashboard.php");
+                     redirect('home');
                     exit;
                 }
                 else {
@@ -65,6 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     $_SESSION['signin_errors'] = $errors;
-    header("Location: ../signin.php");
+     redirect('signin');
     exit;
 }

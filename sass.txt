@@ -1,6 +1,0 @@
-install
-npm install -g sass
-
-compiled 
-sass scss/main.scss css/main.css
-

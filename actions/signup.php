@@ -1,7 +1,13 @@
 <?php
-require './../connection.php'; // Ensure this connects to your PDO instance properly
+include('./../includes/helpers.php');
+
+require './../connection.php'; 
 session_start();
 
+if (isset($_SESSION['user_id'])) {
+    redirect('home');
+    exit;
+}
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -42,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($errors)) {
         $_SESSION['signup_errors'] = $errors;
         $_SESSION['signup_old'] = $_POST;
-        header('Location: ../signup.php');
+        redirect('signup');
         exit;
     }
 
@@ -61,13 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
 
         $_SESSION['success'] = "Registration successful. Please log in.";
-        header("Location: ../signin.php");
+        redirect('signin');
         exit;
     } catch (PDOException $e) {
         // You might want to check for duplicate email more specifically here
         $_SESSION['signup_errors'] = ['email' => "Email already exists or database error."];
         $_SESSION['signup_old'] = $_POST;
-        header('Location: ../signup.php');
+        redirect('signup');
         exit;
     }
 }

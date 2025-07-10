@@ -1,12 +1,17 @@
 <?php
 
 require_once 'includes/head.php';
+if (isset($_SESSION['user_id'])) {
+    header("Location: ?page=home"); 
+    exit;
+}
+
 $title = "FreshMart - Order Online, Skip the Line!";
 $errors = $_SESSION['signup_errors'] ?? [];
 $old = $_SESSION['signup_old'] ?? [];
 unset($_SESSION['signup_errors'], $_SESSION['signup_old']);
 ?>
-
+<script src="js/reload.js?<?php echo time()?>"></script>
 <?php include('includes/nav.php') ?>
 
 <main class="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
@@ -114,7 +119,7 @@ unset($_SESSION['signup_errors'], $_SESSION['signup_old']);
       <div class="mt-6 text-center text-sm">
         <p class="text-gray-600">
           Already have an account?
-          <a href="signin.php" class="font-medium text-green-600 hover:text-green-500 ml-1">
+          <a href="?page=signin" class="font-medium text-green-600 hover:text-green-500 ml-1">
             Sign in
           </a>
         </p>

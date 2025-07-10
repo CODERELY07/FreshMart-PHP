@@ -1,6 +1,10 @@
 <?php
-
+  
   require_once 'includes/head.php';
+  if (isset($_SESSION['user_id'])) {
+    header("Location: ?page=home"); 
+    exit;
+  }
   
   $title = "FreshMart - Order Online, Skip the Line!";
 
@@ -8,6 +12,8 @@
   $old = $_SESSION['signin_old'] ?? [];
   unset($_SESSION['signin_errors'], $_SESSION['signin_old']);
 ?>
+<script src="js/reload.js?<?php echo time()?>"></script>
+
 <?php include('includes/nav.php'); ?>
 
 <main class="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
@@ -85,7 +91,7 @@
         <div class="mt-6 text-center text-sm">
           <p class="text-gray-600">
             Don’t have an account?
-            <a href="signup.php" class="font-medium text-green-600 hover:text-green-500 ml-1">Sign Up</a>
+            <a href="?page=signup" class="font-medium text-green-600 hover:text-green-500 ml-1">Sign Up</a>
           </p>
         </div>
       </div>
