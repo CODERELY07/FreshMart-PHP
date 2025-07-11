@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('UTC');
 include('./../includes/helpers.php');
 
 require './../connection.php'; 
@@ -56,18 +57,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $hash = password_hash($password, PASSWORD_BCRYPT);
 
-        $stmt = $pdo->prepare("INSERT INTO users (first_name, last_name, email, phone, password_hash)
-                               VALUES (:first, :last, :email, :phone, :pass)");
+        $verification_code = bin2hex(random_bytes(16));
+        $verification_expiry = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+        $stmt = $pdo->prepare("INSERT INTO users (first_name, last_name, email, phone, password_hash, verification_code, verification_expiry)
+                            VALUES (:first, :last, :email, :phone, :pass, :vcode, :vexpiry)");
         $stmt->execute([
             ':first' => $first,
             ':last' => $last,
             ':email' => $email,
             ':phone' => $phone,
-            ':pass' => $hash
+            ':pass' => $hash,
+            ':vcode' => $verification_code,
+            ':vexpiry' => $verification_expiry
         ]);
 
         $_SESSION['success'] = "Registration successful. Please log in.";
-        redirect('signin');
+        include('./../sendEmailVerification.php');
+        redirect('verify');
         exit;
     } catch (PDOException $e) {
         // You might want to check for duplicate email more specifically here

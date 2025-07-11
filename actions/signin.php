@@ -29,7 +29,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if ($stmt->rowCount() === 1) {
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
-               if (password_verify($pass, $user['password_hash'])) {
+               
+                if (password_verify($pass, $user['password_hash'])) {
+                    // Check if email is verified
+                    $verifyStmt = $pdo->prepare("SELECT is_verified FROM users WHERE user_id = :id");
+                    $verifyStmt->execute([':id' => $user['user_id']]);
+                    $status = $verifyStmt->fetchColumn();
+
+                    if (!$status) {
+                        $_SESSION['unverified_user_id'] = $user['user_id'];
+                        $_SESSION['verify_email'] = $email;
+                        redirect('verify');
+                        exit;
+                    }
+
                     $_SESSION['user_id'] = $user['user_id'];
 
                     if (!empty($_POST['remember-me'])) {

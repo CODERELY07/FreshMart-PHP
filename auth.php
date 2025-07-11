@@ -1,4 +1,5 @@
 <?php
+    date_default_timezone_set('UTC');
     if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_token'])) {
         require_once 'connection.php';
 
